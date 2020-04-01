@@ -1,11 +1,12 @@
 import 'package:fish_redux/fish_redux.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Action;
 
+@immutable
 class TestStub extends StatefulWidget {
   final Widget testWidget;
   final String title;
 
-  TestStub(this.testWidget, {this.title = 'FlutterTest'});
+  const TestStub(this.testWidget, {this.title = 'FlutterTest'});
 
   @override
   _StubState createState() => _StubState();
@@ -25,26 +26,22 @@ class _StubState extends State<TestStub> {
 class TestPage<T extends Cloneable<T>, P> extends Page<T, P> {
   TestPage({
     @required InitState<T, P> initState,
-    List<Middleware<T>> middlewares,
+    List<Middleware<T>> middleware,
     @required ViewBuilder<T> view,
     Reducer<T> reducer,
     ReducerFilter<T> filter,
     Effect<T> effect,
-    HigherEffect<T> higherEffect,
-    OnError<T> onError,
     Dependencies<T> dependencies,
     ShouldUpdate<T> shouldUpdate,
     WidgetWrapper wrapper,
     Key Function(T) key,
   }) : super(
           initState: initState,
-          middlewares: middlewares,
+          middleware: middleware,
           view: view,
           reducer: reducer,
           filter: filter,
           effect: effect,
-          higherEffect: higherEffect,
-          onError: onError,
           dependencies: dependencies,
           shouldUpdate: shouldUpdate,
           wrapper: wrapper,
@@ -58,8 +55,6 @@ class TestComponent<T extends Cloneable<T>> extends Component<T> {
     Reducer<T> reducer,
     ReducerFilter<T> filter,
     Effect<T> effect,
-    HigherEffect<T> higherEffect,
-    OnError<T> onError,
     Dependencies<T> dependencies,
     ShouldUpdate<T> shouldUpdate,
     WidgetWrapper wrapper,
@@ -69,8 +64,6 @@ class TestComponent<T extends Cloneable<T>> extends Component<T> {
             reducer: reducer,
             filter: filter,
             effect: effect,
-            higherEffect: higherEffect,
-            onError: onError,
             dependencies: dependencies,
             shouldUpdate: shouldUpdate,
             wrapper: wrapper,
@@ -82,16 +75,12 @@ class TestAdapter<T extends Cloneable<T>> extends Adapter<T> {
     AdapterBuilder<T> adapter,
     Reducer<T> reducer,
     Effect<T> effect,
-    HigherEffect<T> higherEffect,
-    OnError<T> onError,
     ReducerFilter<T> filter,
     Dependencies<T> dependencies,
   }) : super(
             adapter: adapter,
             reducer: reducer,
             effect: effect,
-            higherEffect: higherEffect,
-            onError: onError,
             filter: filter,
             dependencies: dependencies);
 }
@@ -102,34 +91,37 @@ class TestStaticFlowAdapter<T extends Cloneable<T>>
     @required List<Dependent<T>> slots,
     Reducer<T> reducer,
     Effect<T> effect,
-    HigherEffect<T> higherEffect,
-    OnError<T> onError,
     ReducerFilter<T> filter,
-  }) : super(
-            slots: slots,
-            reducer: reducer,
-            effect: effect,
-            higherEffect: higherEffect,
-            onError: onError,
-            filter: filter);
+  }) : super(slots: slots, reducer: reducer, effect: effect, filter: filter);
 }
 
 class TestDynamicFlowAdapter<T extends Cloneable<T>>
     extends DynamicFlowAdapter<T> {
   TestDynamicFlowAdapter({
     @required Map<String, AbstractLogic<Object>> pool,
-    @required Connector<T, List<ItemBean>> connector,
+    @required ConnOp<T, List<ItemBean>> connector,
     ReducerFilter<T> filter,
     Reducer<T> reducer,
     Effect<T> effect,
-    HigherEffect<T> higherEffect,
-    OnError<T> onError,
   }) : super(
             pool: pool,
             connector: connector,
             reducer: reducer,
             effect: effect,
-            higherEffect: higherEffect,
-            onError: onError,
             filter: filter);
+}
+
+class TestSourceFlowAdapter<T extends AdapterSource>
+    extends SourceFlowAdapter<T> {
+  TestSourceFlowAdapter({
+    @required Map<String, AbstractLogic<Object>> pool,
+    ReducerFilter<T> filter,
+    Reducer<T> reducer,
+    Effect<T> effect,
+  }) : super(
+          pool: pool,
+          reducer: reducer,
+          effect: effect,
+          filter: filter,
+        );
 }
